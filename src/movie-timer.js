@@ -1,26 +1,17 @@
 MoveTimer = function(){
+
         var refs = {
             canvas: 'MovieTimer'
-        };
-
-        var canvas = {
-            height: 300,
-            width: 200
         };
 
         this.init = function(){
             var canvas = new fabric.Canvas(refs.canvas);
 
-            var rect = new fabric.Rect({
-                top : 100,
-                left : 100,
-                width : 60,
-                height : 70,
-                fill : 'red'
+            var circle = new fabric.Circle({
+                radius: 20, fill: 'green', left: 100, top: 100
             });
 
-            canvas.add(rect);
-
+            canvas.add(circle);
         };
 
         return this.init();
