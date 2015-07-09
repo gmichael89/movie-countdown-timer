@@ -1,0 +1,16 @@
+{
+  "name": "movie-timer",
+  "version": "1.0.0",
+  "description": "Move timer built with FabricJS",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "babelify": "^6.1.2",
+    "express": "^4.13.1"
+  }
+}
