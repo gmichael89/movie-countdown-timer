@@ -1,102 +1,118 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 MovieTimer = function (){
 
+    this.settings = {
+        canvasHeight: 500,
+        canvasWidth: 700,
+        countdownStartTime: 10,
+    };
+
     this.refs = {
         canvas: 'MovieTimer'
     };
 
-    this.canvasProps = {
-        width: 700,
-        height: 500
-    };
+    this.endAngle = 0;
 
-    fabric.Object.prototype.originX = 'center';
-    fabric.Object.prototype.originY = 'center';
+    // fabric.Object.prototype.originX = 'center';
+    // fabric.Object.prototype.originY = 'center';
 
     this._createCanvas();
+    this._setCommonPoints();
     this._drawGuidelines();
+    this._createCountdownText();
     this._createArc();
 };
 
 MovieTimer.prototype.countdown = function () {
-    //this.animateArc();
+    this.animateArc();
+};
+
+MovieTimer.prototype._setCommonPoints = function () {
+    this.centerX = (this.canvas.getWidth() / 2);
+    this.centerY = (this.canvas.getHeight() / 2);
 };
 
 MovieTimer.prototype.animateArc = function () {
-    this.arc.animate('angle', 360, {
+    var self = this;
+    fabric.util.animate({
+        startValue: 0,
+        endValue: 2 * Math.PI,
         duration: 1000,
-        //onChange: canvas.renderAll.bind(canvas),
-        onComplete: function() {
-            //animateBtn.disabled = false;
+        onChange: function(value){
+            self.endAngle = value;
+            self.canvas.renderAll();
         },
-        //easing: fabric.util.ease[document.getElementById('easing').value]
+        onComplete: function(){
+            if (self.settings.countdownStartTime > 0) {
+                --self.settings.countdownStartTime;
+                self.countdownText.setText((self.settings.countdownStartTime).toString());
+                self.animateArc();
+            }
+        }
     });
+
 };
 
 MovieTimer.prototype._createCanvas = function () {
     this.canvas = new fabric.Canvas(this.refs.canvas, {
-        width: this.canvasProps.width,
-        height: this.canvasProps.height,
+        width: this.settings.canvasWidth,
+        height: this.settings.canvasHeight,
         selection: false
     });
 
     this.canvas.calcOffset();
 };
 
+MovieTimer.prototype._createCountdownText = function () {
+    this.countdownText = new fabric.Text((this.settings.countdownStartTime).toString(), {
+        originX: 'center',
+        originY: 'center',
+        left: (this.canvas.getWidth() / 2),
+        top: (this.canvas.getHeight() / 2)
+    });
+
+    this.canvas.add(this.countdownText);
+};
+
 MovieTimer.prototype._drawGuidelines = function () {
 
     var verticalLine = new fabric.Line([
-        (this.canvas.getWidth() / 2), 0, (this.canvas.getWidth() / 2), this.canvas.getHeight()
+        this.centerX, 0, this.centerX, this.canvas.getHeight()
     ], {
-            stroke: '#000'
+        stroke: '#000',
+        selectable: false
     });
 
     var horizontalLine = new fabric.Line([
-        0, (this.canvas.getHeight() / 2), this.canvas.getWidth(), (this.canvas.getHeight() / 2)
+        0, this.centerY, this.canvas.getWidth(), this.centerY
     ], {
-        stroke: '#000'
+        stroke: '#000',
+        selectable: false
     });
 
     this.canvas.add(verticalLine, horizontalLine);
 };
 
 MovieTimer.prototype._createArc = function () {
+    var self = this;
 
-    //this.arc = new fabric.Circle({
-    //    //selectable: false,
-    //    radius: (this.canvas.getWidth() / 3),
-    //    left: (this.canvas.getWidth() / 2),
-    //    top: (this.canvas.getHeight() / 2),
-    //    originX: 'center',
-    //    originY: 'center',
-    //    angle: -90,
-    //    startAngle: 90,// default: 0
-    //    //rotatingPointOffset: 0,
-    //    //endAngle: Math.Pi,
-    //    stroke: '#000',
-    //    strokeWidth: 3,
-    //    fill: ''
-    //});
+    this.arc = new fabric.Circle({
+        radius: (this.canvas.getWidth() * 2),
+        left: (this.canvas.getWidth() / 2),
+        top: (this.canvas.getHeight() / 2),
+        originX: 'center',
+        originY: 'center',
+        angle: -90,
+        fill: 'brown',
+        opacity: 0.4,
+        clipTo: function(context){
+            // the center is relative to the object - hence 0, 0 instead of the 100, 100
+            context.moveTo(0, 0);
 
-    //this.canvas.add(this.arc);
-
-//    var path = new fabric.Path('M121.32,0L44.58,0C36.67,0,29.5,3.22,24.31,8.41\
-//c-5.19,5.19-8.41,12.37-8.41,20.28c0,15.82,12.87,28.69,28.69,28.69c0,0,4.4,\
-//0,7.48,0C36.66,72.78,8.4,101.04,8.4,101.04C2.98,106.45,0,113.66,0,121.32\
-//c0,7.66,2.98,14.87,8.4,20.29l0,0c5.42,5.42,12.62,8.4,20.28,8.4c7.66,0,14.87\
-//-2.98,20.29-8.4c0,0,28.26-28.25,43.66-43.66c0,3.08,0,7.48,0,7.48c0,15.82,\
-//12.87,28.69,28.69,28.69c7.66,0,14.87-2.99,20.29-8.4c5.42-5.42,8.4-12.62,8.4\
-//-20.28l0-76.74c0-7.66-2.98-14.87-8.4-20.29C136.19,2.98,128.98,0,121.32,0z');
-//
-//    this.canvas.add(path.set({
-//        left: (this.canvas.getWidth() / 2),
-//        top: (this.canvas.getHeight() / 2)
-//    }));
-
-    this.arc = new fabric.Path(
-        'M ' + (this.canvas.getWidth() / 2)+', '+(this.canvas.getHeight() / 2)+', '+
-        'L44.58,0C36.67,0,29.5,3.22,24.31,8.41c-5.19,5.19-8.41,12.37-8.41,20.28');
-
+            // the endAngle is the global variable we animate from 0 to 360 degrees (2 * PI)
+            context.arc(0, 0, (self.canvas.getWidth() * 2), 0, self.endAngle);
+        }
+    });
 
     this.canvas.add(this.arc);
 };
