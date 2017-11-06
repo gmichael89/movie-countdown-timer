@@ -1,0 +1,10 @@
+{
+    "Endpoints": {
+        "GoogleGeocode": "https://maps.googleapis.com/maps/api/geocode/json",
+        "DarkSky": "https://api.darksky.net/forecast"
+    },
+    "ApiKeys": {
+        "DarkSky": "35577d0c9c35f5edd352cdf2aac19fdb",
+        "GoogleGeocode": "AIzaSyCA83E8ver1rpsr6L9jkpXrqb6sopee2T0"
+    }
+}
