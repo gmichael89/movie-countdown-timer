@@ -8,12 +8,15 @@
 <body>
     <canvas id="MovieTimer" width="700" height="500"></canvas>
 
+    <input type="button" value="Play" onclick="movieTimer.countdown();"/>
+    <input type="button" value="Reset" onclick="movieTimer.reset();"/>
     <script src="./fabric.js"></script>
     <script src="./bundle.js"></script>
 
     <script>
-        movieTimer = new MovieTimer();
-        movieTimer.countdown();
+        movieTimer = new MovieTimer({
+            onFinish: null
+        });
     </script>
 </body>
 </html>
